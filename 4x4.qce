@@ -1,0 +1,94 @@
+// Version 4x4. L'idée est d'utiliser 16 cases pour les pièces, 
+// puis d'appliquer une première fois l'algorithme de manière macroscopique 
+// pour obtenir la ligne & colonne d'un échiquier 2x2.
+// Puis l'on relance le programme sur ledit échiquier pour obtenir la 
+// ligne & colonne de la clé.
+
+// Au début du programme, col_key & line_key donnent la position dans 
+// l'échiquier MACROSCOPIQUE (on considère que 4x4 = 1 case 
+// d'un plus gros échiquier).
+// Lorsque l'on a localisé la case MACRO dans laquelle se situais la pièce, ces
+// Qbits sont reset puis re-hadamardisé.
+var num_qubits = 22;
+// 16 pour l'échiquier, 2 pour la clé, 2 pour la pièce à fip, 2 pour Bob.
+qc.reset(num_qubits);
+var c0000 = qint.new(1, 'Case 0000');
+var c0001 = qint.new(1, 'Case 0001');
+var c0010 = qint.new(1, 'Case 0010');
+var c0011 = qint.new(1, 'Case 0011');
+var c0100 = qint.new(1, 'Case 0100');
+var c0101 = qint.new(1, 'Case 0101');
+var c0110 = qint.new(1, 'Case 0110');
+var c0111 = qint.new(1, 'Case 0111');
+var c1000 = qint.new(1, 'Case 1000');
+var c1001 = qint.new(1, 'Case 1001');
+var c1010 = qint.new(1, 'Case 1010');
+var c1011 = qint.new(1, 'Case 1011');
+var c1100 = qint.new(1, 'Case 1100');
+var c1101 = qint.new(1, 'Case 1101');
+var c1110 = qint.new(1, 'Case 1110');
+var c1111 = qint.new(1, 'Case 1111');
+var col_key = qint.new(1, 'Col. Key')
+var line_key = qint.new(1, 'Lin. Key')
+var col_coin = qint.new(1, 'Col. Coin')
+var line_coin = qint.new(1, 'Lin. Coin')
+var col_bob = qint.new(1, 'Col. Bob')
+var line_bob = qint.new(1, 'Lin. Bob')
+
+qc.label('16 Random Coins')
+c0000.write(0);
+c0001.write(0);
+c0010.write(0);
+c0011.write(0);
+c0100.write(0);
+c0101.write(0);
+c0110.write(0);
+c0111.write(0);
+c1000.write(0);
+c1001.write(0);
+c1010.write(0);
+c1011.write(0);
+c1100.write(0);
+c1101.write(0);
+c1110.write(0);
+c1111.write(0);
+c0000.hadamard();
+c0001.hadamard();
+c0010.hadamard();
+c0011.hadamard();
+c0100.hadamard();
+c0101.hadamard();
+c0110.hadamard();
+c0111.hadamard();
+c1000.hadamard();
+c1001.hadamard();
+c1010.hadamard();
+c1011.hadamard();
+c1100.hadamard();
+c1101.hadamard();
+c1110.hadamard();
+c1111.hadamard();
+
+qc.label('Randomize Key')
+col_key.write(0)
+line_key.write(0)
+col_key.hadamard()
+line_key.hadamard()
+
+// On somme la dernière ligne & colonne pour obtenir la position 
+// (parité ligne & colonne)
+qc.label('Coin Parity')
+// Colonne = 0001+0011+0111+1111 (mod 2)
+col_coin.cnot(c0001)
+col_coin.cnot(c0011)
+col_coin.cnot(c0111)
+col_coin.cnot(c1111)
+// Ligne = 1100+1101+1110+1111
+line_coin.cnot(c1100)
+line_coin.cnot(c1101)
+line_coin.cnot(c1110)
+line_coin.cnot(c1111)
+// Si la clé n'est pas sur notre colonne, alors on flip col_coin
+// De même pour les lignes avec line_col
+col_coin.cnot(col_key)
+line_coin.cnot(line_key)
