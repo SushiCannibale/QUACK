@@ -1,0 +1,75 @@
+// Programming Quantum Computers
+//   by Eric Johnston, Nic Harrigan and Mercedes Gimeno-Segovia
+//   O'Reilly Media
+
+// To run this online, go to http://oreilly-qc.github.io?p=5-3
+
+// Initialize
+var num_qubits = 10;
+qc.reset(num_qubits);
+var c0 = qint.new(1, 'case 00');
+var c1 = qint.new(1, 'case 01');
+var c2 = qint.new(1, 'case 10');
+var c3 = qint.new(1, 'case 11');
+var cc = qint.new(1, 'colonne clé');
+var lc = qint.new(1, 'ligne clé');
+var ac = qint.new(1, 'Colonne de la pièce à tourner');
+var al = qint.new(1, 'Ligne de la pièce à tourner');
+var bc = qint.new(1, 'Bob colonne');
+var bl = qint.new(1, 'Bob ligne');
+// Pièces aléatoires
+qc.label('4 pièces');
+c0.write(0);
+c0.hadamard();
+c1.write(0);
+c1.hadamard();
+c2.write(0);
+c2.hadamard();
+c3.write(0);
+c3.hadamard();
+
+qc.label('Clé');
+cc.write(0);
+cc.hadamard();
+lc.write(0);
+lc.hadamard();
+
+qc.label('Parité clé' );
+ac.write(0);
+al.write(0);
+ac.cnot(c1);
+ac.cnot(c3);
+al.cnot(c2);
+al.cnot(c3);
+ac.cnot(cc);
+al.cnot(lc);
+qc.label('Flip coin' );
+qc.cnot(0x8, 0x40|0x80);
+ac.not();
+qc.cnot(0x4, 0x40|0x80);
+ac.not();
+al.not();
+qc.cnot(0x2, 0x40|0x80);
+al.not();
+qc.not(0x40|0x80);
+qc.cnot(0x1, 0x40|0x80);
+qc.not(0x40|0x80);
+qc.label('Bob' );
+bc.write(0);
+bl.write(0);
+bc.cnot(c1);
+bc.cnot(c3);
+bl.cnot(c2);
+bl.cnot(c3);
+qc.label('Mesure' );
+qc.nop();
+var cc_result = cc.read();  
+var lc_result = lc.read();  
+qc.print(bc);
+qc.print(bl);
+var bc_result = bc.read();  
+var bl_result = bl.read();  
+qc.print(bc);
+qc.print(bl);
+
+
