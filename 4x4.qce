@@ -28,14 +28,14 @@ var c1100 = qint.new(1, 'Case 1100');
 var c1101 = qint.new(1, 'Case 1101');
 var c1110 = qint.new(1, 'Case 1110');
 var c1111 = qint.new(1, 'Case 1111');
-var col_key = qint.new(1, 'Col. Key')
-var line_key = qint.new(1, 'Lin. Key')
-var col_coin = qint.new(1, 'Col. Coin')
-var line_coin = qint.new(1, 'Lin. Coin')
-var col_bob = qint.new(1, 'Col. Bob')
-var line_bob = qint.new(1, 'Lin. Bob')
+var col_key = qint.new(1, 'Col. Key');
+var line_key = qint.new(1, 'Lin. Key');
+var col_coin = qint.new(1, 'Col. Coin');
+var line_coin = qint.new(1, 'Lin. Coin');
+var col_bob = qint.new(1, 'Col. Bob');
+var line_bob = qint.new(1, 'Lin. Bob');
 
-qc.label('16 Random Coins')
+qc.label('16 Random Coins');
 c0000.write(0);
 c0001.write(0);
 c0010.write(0);
@@ -69,26 +69,53 @@ c1101.hadamard();
 c1110.hadamard();
 c1111.hadamard();
 
-qc.label('Randomize Key')
-col_key.write(0)
-line_key.write(0)
-col_key.hadamard()
-line_key.hadamard()
+qc.label('Randomize Key');
+col_key.write(0);
+line_key.write(0);
+col_key.hadamard();
+line_key.hadamard();
 
 // On somme la dernière ligne & colonne pour obtenir la position 
 // (parité ligne & colonne)
-qc.label('Coin Parity')
+qc.label('Coin Parity');
+col_coin.write(0);
+line_coin.write(0);
 // Colonne = 0001+0011+0111+1111 (mod 2)
-col_coin.cnot(c0001)
-col_coin.cnot(c0011)
-col_coin.cnot(c0111)
-col_coin.cnot(c1111)
+col_coin.cnot(c0001);
+col_coin.cnot(c0011);
+col_coin.cnot(c0111);
+col_coin.cnot(c1111);
 // Ligne = 1100+1101+1110+1111
-line_coin.cnot(c1100)
-line_coin.cnot(c1101)
-line_coin.cnot(c1110)
-line_coin.cnot(c1111)
+line_coin.cnot(c1100);
+line_coin.cnot(c1101);
+line_coin.cnot(c1110);
+line_coin.cnot(c1111);
 // Si la clé n'est pas sur notre colonne, alors on flip col_coin
 // De même pour les lignes avec line_col
-col_coin.cnot(col_key)
-line_coin.cnot(line_key)
+col_coin.cnot(col_key);
+line_coin.cnot(line_key);
+
+qc.label('Flip subgrid');
+// Si key == 11, alors on doit FORCEMENT flip la pièce en bas a gauche car 
+// elle "not" la somme de la colonne et de la ligne en même temps.
+qc.cnot(0x8000, 0x40000|0x80000);
+// Si key == 00, alors on doit FORCEMENT flip une pièce qui n'est 
+// NI sur la ligne NI sur la colonne (on est déjà sur la subgrid de la key). 
+// On choisira c0000, arbitrairement.
+qc.not(0x40000|0x80000);
+qc.cnot(0x1, 0x40000|0x80000);
+qc.not(0x40000|0x80000);
+// Sinon on flip un coin sur la ligne ou la colonne. On prendra celui qui est 
+// le plus proche du coin bas gauche, arbitrairement.
+qc.not(0x40000);
+qc.cnot(0x4000, 0x40000|0x80000);
+qc.not(0x40000);
+qc.not(0x80000);
+qc.cnot(0x2000, 0x40000|0x80000);
+qc.not(0x80000);
+
+qc.label('Inner grid');
+// Reste plus qu'a refaire la même chose sur la grille à la colonne donnée par 
+// col_coin, et la ligne donnée par line_col.
+
+// TODO
