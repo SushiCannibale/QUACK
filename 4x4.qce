@@ -1,121 +1,124 @@
-// Version 4x4. L'idée est d'utiliser 16 cases pour les pièces, 
-// puis d'appliquer une première fois l'algorithme de manière macroscopique 
-// pour obtenir la ligne & colonne d'un échiquier 2x2.
-// Puis l'on relance le programme sur ledit échiquier pour obtenir la 
-// ligne & colonne de la clé.
+// Programming Quantum Computers
+//   by Eric Johnston, Nic Harrigan and Mercedes Gimeno-Segovia
+//   O'Reilly Media
 
-// Au début du programme, col_key & line_key donnent la position dans 
-// l'échiquier MACROSCOPIQUE (on considère que 4x4 = 1 case 
-// d'un plus gros échiquier).
-// Lorsque l'on a localisé la case MACRO dans laquelle se situais la pièce, ces
-// Qbits sont reset puis re-hadamardisé.
-var num_qubits = 22;
-// 16 pour l'échiquier, 2 pour la clé, 2 pour la pièce à fip, 2 pour Bob.
+// To run this online, go to http://oreilly-qc.github.io?p=2-1
+
+// This sample generates a single random bit.
+
+var num_qubits = 16;
 qc.reset(num_qubits);
-var c0000 = qint.new(1, 'Case 0000');
-var c0001 = qint.new(1, 'Case 0001');
-var c0010 = qint.new(1, 'Case 0010');
-var c0011 = qint.new(1, 'Case 0011');
-var c0100 = qint.new(1, 'Case 0100');
-var c0101 = qint.new(1, 'Case 0101');
-var c0110 = qint.new(1, 'Case 0110');
-var c0111 = qint.new(1, 'Case 0111');
-var c1000 = qint.new(1, 'Case 1000');
-var c1001 = qint.new(1, 'Case 1001');
-var c1010 = qint.new(1, 'Case 1010');
-var c1011 = qint.new(1, 'Case 1011');
-var c1100 = qint.new(1, 'Case 1100');
-var c1101 = qint.new(1, 'Case 1101');
-var c1110 = qint.new(1, 'Case 1110');
-var c1111 = qint.new(1, 'Case 1111');
-var col_key = qint.new(1, 'Col. Key');
-var line_key = qint.new(1, 'Lin. Key');
+
+var c00 = qint.new(1, 'Case 00');
+var c01 = qint.new(1, 'Case 01');
+var c10 = qint.new(1, 'Case 10');
+var c11 = qint.new(1, 'Case 11');
+
+// Il s'agit de la case cible. Soit une sous-grille, soit la clé
+var col_target = qint.new(1, 'Col. Target');
+var row_target = qint.new(1, 'Row Target');
+
+var col_grid = qint.new(1, 'Col. Grid');
+var row_grid = qint.new(1, 'Row Grid');
+
 var col_coin = qint.new(1, 'Col. Coin');
-var line_coin = qint.new(1, 'Lin. Coin');
+var row_coin = qint.new(1, 'Row Coin');
+
 var col_bob = qint.new(1, 'Col. Bob');
-var line_bob = qint.new(1, 'Lin. Bob');
+var row_bob = qint.new(1, 'Row Bob');
 
-qc.label('16 Random Coins');
-c0000.write(0);
-c0001.write(0);
-c0010.write(0);
-c0011.write(0);
-c0100.write(0);
-c0101.write(0);
-c0110.write(0);
-c0111.write(0);
-c1000.write(0);
-c1001.write(0);
-c1010.write(0);
-c1011.write(0);
-c1100.write(0);
-c1101.write(0);
-c1110.write(0);
-c1111.write(0);
-c0000.hadamard();
-c0001.hadamard();
-c0010.hadamard();
-c0011.hadamard();
-c0100.hadamard();
-c0101.hadamard();
-c0110.hadamard();
-c0111.hadamard();
-c1000.hadamard();
-c1001.hadamard();
-c1010.hadamard();
-c1011.hadamard();
-c1100.hadamard();
-c1101.hadamard();
-c1110.hadamard();
-c1111.hadamard();
+var target_col_proof = qint.new(1, 'Target Col Proof');
+var target_row_proof = qint.new(1, 'Target Row Proof');
+var grid_col_proof = qint.new(1, 'Grid Col Proof');
+var grid_row_proof = qint.new(1, 'Grid Row Proof');
 
-qc.label('Randomize Key');
-col_key.write(0);
-line_key.write(0);
-col_key.hadamard();
-line_key.hadamard();
+qc.label('Prépare');
+qc.write(0, 0b1111111111111111);
+qc.hadamard(0b1111);
+qc.hadamard(0b110000);
 
-// On somme la dernière ligne & colonne pour obtenir la position 
-// (parité ligne & colonne)
-qc.label('Coin Parity');
-col_coin.write(0);
-line_coin.write(0);
-// Colonne = 0001+0011+0111+1111 (mod 2)
-col_coin.cnot(c0001);
-col_coin.cnot(c0011);
-col_coin.cnot(c0111);
-col_coin.cnot(c1111);
-// Ligne = 1100+1101+1110+1111
-line_coin.cnot(c1100);
-line_coin.cnot(c1101);
-line_coin.cnot(c1110);
-line_coin.cnot(c1111);
-// Si la clé n'est pas sur notre colonne, alors on flip col_coin
-// De même pour les lignes avec line_col
-col_coin.cnot(col_key);
-line_coin.cnot(line_key);
+// Ici, col_grid & row_grid donnent la position de la subgrid où se trouve la clé.
+// Il s'agit du premier coin que l'on doit flip et il est à la position 11XY
+// où X est donné par row_grid et Y par col_grid.
+qc.label('Parité Target (Grid)' );
+col_grid.cnot(c01);
+col_grid.cnot(c11);
+row_grid.cnot(c10);
+row_grid.cnot(c11);
 
-qc.label('Flip subgrid');
-// Si key == 11, alors on doit FORCEMENT flip la pièce en bas a gauche car 
-// elle "not" la somme de la colonne et de la ligne en même temps.
-qc.cnot(0x8000, 0x40000|0x80000);
-// Si key == 00, alors on doit FORCEMENT flip une pièce qui n'est 
-// NI sur la ligne NI sur la colonne (on est déjà sur la subgrid de la key). 
-// On choisira c0000, arbitrairement.
-qc.not(0x40000|0x80000);
-qc.cnot(0x1, 0x40000|0x80000);
-qc.not(0x40000|0x80000);
-// Sinon on flip un coin sur la ligne ou la colonne. On prendra celui qui est 
-// le plus proche du coin bas gauche, arbitrairement.
-qc.not(0x40000);
-qc.cnot(0x4000, 0x40000|0x80000);
-qc.not(0x40000);
-qc.not(0x80000);
-qc.cnot(0x2000, 0x40000|0x80000);
-qc.not(0x80000);
+col_grid.cnot(col_target);
+row_grid.cnot(row_target);
 
-qc.label('Inner grid');
-// Reste plus qu'a refaire la même chose sur la grille à la colonne donnée par 
-// col_coin, et la ligne donnée par line_col.
+qc.label('Flip coin (bottom right)')
+// 1 & 1
+qc.cnot(0b1000, 0b11000000);
+// 1 & 0
+col_grid.not();
+qc.cnot(0b100, 0b11000000);
+col_grid.not();
+// 0 & 1
+row_grid.not();
+qc.cnot(0b10, 0b11000000);
+row_grid.not();
+// 0 & 0
+qc.not(0b11000000);
+qc.cnot(0b1, 0b11000000);
+qc.not(0b11000000);
 
-// TODO
+/// PREUVE MI-PARCOURS
+target_col_proof.cnot(col_target);
+target_row_proof.cnot(row_target);
+grid_col_proof.cnot(c01);
+grid_col_proof.cnot(c11);
+grid_row_proof.cnot(c10);
+grid_row_proof.cnot(c11);
+
+target_col_proof.read()
+target_row_proof.read()
+grid_col_proof.read()
+grid_row_proof.read()
+/// FIN PREUVE MI-PARCOURS
+
+qc.label('Prépare');
+qc.hadamard(0b1111);
+// Cette fois, col_target & row_target représentent la position de la clé, car 
+// l'on est en fin de récursion.
+qc.hadamard(0b110000);
+
+// On s'attaque à la pièce posée en 00XY où X est donné par row_coin et Y 
+// par col_coin.
+qc.label('Parité Target (Coin)' );
+col_coin.cnot(c01);
+col_coin.cnot(c11);
+row_coin.cnot(c10);
+row_coin.cnot(c11);
+
+col_coin.cnot(col_target);
+row_coin.cnot(row_target);
+
+qc.label('Flip coin (top left)')
+// 1 & 1
+qc.cnot(0b1000, 0b1100000000);
+// 1 & 0
+col_coin.not();
+qc.cnot(0b100, 0b1100000000);
+col_coin.not();
+// 0 & 1
+row_coin.not();
+qc.cnot(0b10, 0b1100000000);
+row_coin.not();
+// 0 & 0
+qc.not(0b1100000000);
+qc.cnot(0b1, 0b1100000000);
+qc.not(0b1100000000);
+
+qc.label('Bob reads');
+col_bob.cnot(c01);
+col_bob.cnot(c11);
+row_bob.cnot(c10);
+row_bob.cnot(c11);
+
+col_target.read();
+row_target.read();
+col_bob.read();
+row_bob.read();
