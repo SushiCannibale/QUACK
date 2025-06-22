@@ -29,8 +29,8 @@ var row_bob = qint.new(1, 'Row Bob');
 
 var target_col_proof = qint.new(1, 'Target Col Proof');
 var target_row_proof = qint.new(1, 'Target Row Proof');
-var grid_col_proof = qint.new(1, 'Grid Col Proof');
-var grid_row_proof = qint.new(1, 'Grid Row Proof');
+var grid_col_proof = qint.new(1, 'Col Bob Grid');
+var grid_row_proof = qint.new(1, 'Row Bob Grid');
 
 qc.label('Prépare');
 qc.write(0, 0b1111111111111111);
