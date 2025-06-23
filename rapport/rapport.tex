@@ -6,6 +6,7 @@
 \usepackage[thinlines]{easytable}
 \graphicspath{ {./images/} }
 
+\newcommand{\red}[1]{\(\color{red}#1\)}
 
 \pagestyle{fancy} % Utilisation de fancyhdr
 
@@ -138,5 +139,119 @@ Delrieu Nathan
     Comme vu ci-dessus, le pattern est scalable à une grille 8x8. Pour celà, il nous faudra simplement une paire de Q-bits en plus représentant la position dans la 2e sous-grille, et le choix arbitraire d'un coin de l'échiquier.
 
     \section{Analyse mathématique}
+
+\[
+    \begin{array}{l}
+    |\psi_{0}\rangle = \left(
+    \mathbbm{1} \oplus \mathbbm{1} \oplus \mathbbm{1} \oplus \mathbbm{1} \oplus \mathbbm{1} \oplus \mathbbm{1} \oplus H \oplus H \oplus H \oplus H \oplus H \oplus H 
+    \right) |\ 000000000000\rangle \\
+    
+    |\psi_{0}\rangle = \frac{1}{8} \left(
+    |000000000000\rangle + |000000000001\rangle + |000000000010\rangle + |000000000011\rangle \\ 
+    + |000000000100\rangle + |000000000101\rangle + |000000000110\rangle + |000000000111\rangle \\
+    + |000000001000\rangle + |000000001001\rangle + |000000001010\rangle + |000000001011\rangle \\
+    + |000000001100\rangle + |000000001101\rangle + |000000001110\rangle + |000000001111\rangle + |000000010000\rangle \\
+    + |000000010001\rangle + |000000010010\rangle + |000000010011\rangle + |000000010100\rangle \\
+    + |000000010101\rangle + |000000010110\rangle + |000000010111\rangle + |000000011000\rangle + |000000011001\rangle \\
+    + |000000011010\rangle + |000000011011\rangle + |000000011100\rangle + |000000011101\rangle \\
+    + |000000011110\rangle + |000000011111\rangle + |000000100000\rangle + |000000100001\rangle \\
+    + |000000100010\rangle + |000000100011\rangle + |000000100100\rangle + |000000100101\rangle \\ 
+    + |000000100110\rangle + |000000100111\rangle + |000000101000\rangle + |000000101001\rangle \\
+    + |000000101010\rangle + |000000101011\rangle + |000000101100\rangle + |000000101101\rangle +  |000000101110\rangle\\ 
+    + |000000101111\rangle + |000000110000\rangle + |000000110001\rangle + |000000110010\rangle \\ 
+    + |000000110011\rangle + |000000110100\rangle + |000000110101\rangle+ |000000110110\rangle + |000000110111\rangle \\ 
+    + |000000111000\rangle + |000000111001\rangle + |000000111010\rangle + |000000111011\rangle \\
+    + |000000111100\rangle + |000000111101\rangle + |000000111110\rangle + |000000111111\rangle \right)) \\ 
+     \end{array}
+    \]
+
+  \[
+    \begin{array}{l}
+    |\psi_{1}\rangle = \hat{c}\ |\ \psi_{0} \rangle\ (\( \color{blue}1e\ cnot\)) \\ 
+    |\psi_{1}\rangle = \frac{1}{8} (
+    |000000000000\rangle + |000000000001\rangle + |000\red{1}000000\red{1}0\rangle + |000\red{1}000000\red{1}1\rangle \\ 
+    + |000000000100\rangle + |000000000101\rangle + |000\red{1}000001\red{1}0\rangle + |000\red{1}000001\red{1}1\rangle \\
+    + |000000001000\rangle + |000000001001\rangle + |000\red{1}000010\red{1}0\rangle + |000\red{1}000010\red{1}1\rangle \\
+    + |000000001100\rangle + |000000001101\rangle + |000\red{1}000011\red{1}0\rangle + |000\red{1}000011\red{1}1\rangle + |000000010000\rangle \\
+    + |000000010001\rangle + |000\red{1}000100\red{1}0\rangle + |000\red{1}000100\red{1}1\rangle + |000000010100\rangle \\
+    + |000000010101\rangle + |000\red{1}000101\red{1}0\rangle + |000\red{1}000101\red{1}1\rangle + |000000011000\rangle + |000000011001\rangle \\
+    + |000\red{1}000110\red{1}0\rangle + |000\red{1}000110\red{1}1\rangle + |000000011100\rangle + |000000011101\rangle \\
+    + |000\red{1}000111\red{1}0\rangle + |000\red{1}000111\red{1}1\rangle + |000000100000\rangle + |000000100001\rangle \\
+    + |000\red{1}001000\red{1}0\rangle + |000\red{1}001000\red{1}1\rangle + |000000100100\rangle + |000000100101\rangle \\ 
+    + |000\red{1}001001\red{1}0\rangle + |000\red{1}001001\red{1}1\rangle + |000000101000\rangle + |000000101001\rangle \\
+    + |000\red{1}001010\red{1}0\rangle + |000\red{1}001010\red{1}1\rangle + |000000101100\rangle + |000000101101\rangle + |000\red{1}001011\red{1}0\rangle \\ 
+    + |000\red{1}001011\red{1}1\rangle + |000000110000\rangle + |000000110001\rangle + |000\red{1}001100\red{1}0\rangle \\ 
+    + |000\red{1}001100\red{1}1\rangle + |000000110100\rangle + |000000110101\rangle + |000\red{1}001101\red{1}0\rangle + |000\red{1}001101\red{1}1\rangle \\ 
+    + |000000111000\rangle + |000000111001\rangle + |000\red{1}001110\red{1}0\rangle + |000\red{1}001110\red{1}1\rangle \\
+    + |000000111100\rangle + |000000111101\rangle + |000\red{1}001111\red{1}0\rangle + |000\red{1}001111\red{1}1\rangle  ) \\
+         \end{array}
+    \]
+
+    \[
+    \begin{array}{l}
+     |\psi_{2}\rangle = \hat{c}\ |\ \psi_{1} \rangle\ (\( \color{blue}2e\ cnot\)) \\ 
+    |\psi_{2}\rangle = \frac{1}{8} (
+    |000000000000\rangle + |000000000001\rangle + |000100000010\rangle + |000100000011\rangle \\ 
+    + |000000000100\rangle + |000000000101\rangle + |000100000110\rangle + |000100000111\rangle \\
+    + |000\red{1}0000\red{1}000\rangle + |000\red{1}0000\red{1}001\rangle + |000\red{0}0000\red{1}010\rangle + |000\red{0}0000\red{1}011\rangle \\
+    + |000\red{1}0000\red{1}100\rangle + |000\red{1}0000\red{1}101\rangle + |000\red{0}0000\red{1}110\rangle + |000\red{0}0000\red{1}111\rangle + |000000010000\rangle \\
+    + |000000010001\rangle + |000100010010\rangle + |000100010011\rangle + |000000010100\rangle \\
+    + |000000010101\rangle + |000100010110\rangle + |000100010111\rangle + |000\red{1}0001\red{1}000\rangle + |000\red{1}0001\red{1}001\rangle \\
+    + |000\red{0}0001\red{1}010\rangle + |000\red{0}0001\red{1}011\rangle + |000\red{1}0001\red{1}100\rangle + |000\red{1}0001\red{1}101\rangle \\
+    + |000\red{0}0001\red{1}110\rangle + |000\red{0}0001\red{1}111\rangle + |000000100000\rangle + |000000100001\rangle \\
+    + |000100100010\rangle + |000100100011\rangle + |000000100100\rangle + |000000100101\rangle \\ 
+    + |000100100110\rangle + |000100100111\rangle + |000\red{1}0010\red{1}000\rangle + |000\red{1}0010\red{1}001\rangle \\
+    + |000\red{0}0010\red{1}010\rangle + |000\red{0}0010\red{1}011\rangle + |000\red{1}0010\red{1}100\rangle + |000\red{1}0010\red{1}101\rangle  + |000\red{0}0010\red{1}110\rangle \\ 
+    + |000\red{0}0010\red{1}111\rangle + |000000110000\rangle + |000000110001\rangle + |000100110010\rangle \\ 
+    + |000100110011\rangle + |000000110100\rangle + |000000110101\rangle + |000100110110\rangle + |000100110111\rangle \\ 
+    + |000\red{1}0011\red{1}000\rangle + |000\red{1}0011\red{1}001\rangle + |000\red{0}0011\red{1}010\rangle + |000\red{0}0011\red{1}011\rangle \\
+    + |000\red{1}0011\red{1}100\rangle + |000\red{1}0011\red{1}101\rangle + |000\red{0}0011\red{1}110\rangle + |000\red{0}0011\red{1}111\rangle  ) \\
+    \end{array}
+    \]
+
+    \[
+    \begin{array}{l}
+     |\psi_{3}\rangle = \hat{c}\ |\ \psi_{2} \rangle\ (\( \color{blue}3e\ cnot\)) \\ 
+    |\psi_{3}\rangle = \frac{1}{8} (
+    |000000000000\rangle + |000000000001\rangle + |000100000010\rangle + |000100000011\rangle \\ 
+    + |00\red{1}000000\red{1}00\rangle + |00\red{1}000000\red{1}01\rangle + |00\red{1}100000\red{1}10\rangle + |00\red{1}100000\red{1}11\rangle \\
+    + |000100001000\rangle + |000100001001\rangle + |000000001010\rangle + |000000001011\rangle \\
+    + |00\red{1}100001\red{1}00\rangle + |00\red{1}100001\red{1}01\rangle + |00\red{1}000001\red{1}10\rangle + |00\red{1}000001\red{1}11\rangle + |000000010000\rangle \\
+    + |000000010001\rangle + |000100010010\rangle + |000100010011\rangle + |00\red{1}000010\red{1}00\rangle \\
+    + |00\red{1}000010\red{1}01\rangle + |00\red{1}100010\red{1}10\rangle + |00\red{1}100010\red{1}11\rangle + |000100011000\rangle + |000100011001\rangle \\
+    + |000000011010\rangle + |000000011011\rangle + |00\red{1}100011\red{1}00\rangle + |00\red{1}100011\red{1}01\rangle \\
+    + |00\red{1}000011\red{1}10\rangle + |00\red{1}000011\red{1}11\rangle + |000000100000\rangle + |000000100001\rangle \\
+    + |000100100010\rangle + |000100100011\rangle + |00\red{1}000100\red{1}00\rangle + |00\red{1}000100\red{1}01\rangle \\ 
+    + |00\red{1}100100\red{1}10\rangle + |00\red{1}100100\red{1}11\rangle + |000100101000\rangle + |000100101001\rangle \\
+    + |000000101010\rangle + |000000101011\rangle + |00\red{1}100101\red{1}00\rangle + |00\red{1}100101\red{1}01\rangle  + |00\red{1}000101\red{1}10\rangle \\ 
+    + |00\red{1}000101\red{1}11\rangle + |000000110000\rangle + |000000110001\rangle + |000100110010\rangle \\ 
+    + |000100110011\rangle + |000000110100\rangle + |00\red{1}000110\red{1}01\rangle + |00\red{1}100110\red{1}10\rangle + |00\red{1}100110\red{1}11\rangle \\ 
+    + |000100111000\rangle + |000100111001\rangle + |000000111010\rangle + |000000111011\rangle \\
+    + |00\red{1}100111\red{1}00\rangle + |00\red{1}100111\red{1}01\rangle + |00\red{1}000111\red{1}10\rangle + |00\red{1}000111\red{1}11\rangle  ) \\
+    \end{array}
+    \]
+
+      \[
+    \begin{array}{l}
+     |\psi_{4}\rangle = \hat{c}\ |\ \psi_{3} \rangle\ (\( \color{blue}4e\ cnot\)) \\ 
+    |\psi_{4}\rangle = \frac{1}{8} (
+    |000000000000\rangle + |000000000001\rangle + |000100000010\rangle + |000100000011\rangle \\ 
+    + |001000000100\rangle + |001000000101\rangle + |001100000110\rangle + |001100000111\rangle \\
+    + |00\red{1}10000\red{1}000\rangle + |00\red{1}10000\red{1}001\rangle + |00\red{1}00000\red{1}010\rangle + |00\red{1}00000\red{1}011\rangle \\
+    + |00\red{0}10000\red{1}100\rangle + |00\red{0}10000\red{1}101\rangle + |00\red{0}00000\red{1}110\rangle + |00\red{0}00000\red{1}111\rangle + |000000010000\rangle \\
+    + |000000010001\rangle + |000100010010\rangle + |000100010011\rangle + |001000010100\rangle \\
+    + |001000010101\rangle + |001100010110\rangle + |001100010111\rangle + |00\red{1}10001\red{1}000\rangle + |00\red{1}10001\red{1}001\rangle \\
+    + |00\red{1}00001\red{1}010\rangle + |00\red{1}00001\red{1}011\rangle + |00\red{0}10001\red{1}100\rangle + |00\red{0}10001\red{1}101\rangle \\
+    + |00\red{0}00001\red{1}110\rangle + |00\red{0}00001\red{1}111\rangle + |000000100000\rangle + |000000100001\rangle \\
+    + |000100100010\rangle + |000100100011\rangle + |001000100100\rangle + |001000100101\rangle \\ 
+    + |001100100110\rangle + |001100100111\rangle + |00\red{1}10010\red{1}000\rangle + |00\red{1}10010\red{1}001\rangle \\
+    + |00\red{1}00010\red{1}010\rangle + |00\red{1}00010\red{1}011\rangle + |00\red{0}10010\red{1}100\rangle + |00\red{0}10010\red{1}101\rangle  + |00\red{0}00010\red{1}110\rangle \\ 
+    + |00\red{0}00010\red{1}111\rangle + |000000110000\rangle + |000000110001\rangle + |000100110010\rangle \\ 
+    + |000100110011\rangle + |000000110100\rangle + |001000110101\rangle + |001100110110\rangle + |001100110111\rangle \\ 
+    + |00\red{1}10011\red{1}000\rangle + |00\red{1}10011\red{1}001\rangle + |00\red{1}00011\red{1}010\rangle + |00\red{1}00011\red{1}011\rangle \\
+    + |00\red{0}10011\red{1}100\rangle + |00\red{0}10011\red{1}101\rangle + |00\red{0}00011\red{1}110\rangle + |00\red{0}00011\red{1}111\rangle  ) \\
+    \end{array}
+    \]
+    
     \section{Conclusion}
 \end{document}
