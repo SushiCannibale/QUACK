@@ -14,7 +14,7 @@
 
 % Première page
 
-\title{\Huge\textbf{Quack - Jeu d'échec scolaire}}
+\title{\Huge\textbf{Quack - Le Jeu d'échecs (scolaire)}}
 \date{Juin 2025}
 
 % -------------------------
@@ -58,7 +58,28 @@ Delrieu Nathan
 \newpage
 
 \section{Introduction}
-    Ce projet est un projet. Voilà bonne journée.
+Le \href{https://www.youtube.com/watch?v=LFwXghcajLw&list=PLtn704u3JW-K4q9YkQWTfWRxaq-9oLfJ3&index=4}{jeu d'échecs à quatre cases} est une énigme quantique dont le but est de faire deviner l'emplacement d'une clé. Cette dernière est cachée sous l'une des cases de l'échiquier.\newline
+\newline
+La composition de l'échiquier est simple : sur chaque case, on retrouve une pièce qui indique soit la valeur 0 (pile) soit la valeur 1 (face).\newline
+\newline
+Voici comment se déroule une partie dans la configuration 2x2 :
+\newline
+- Un premier joueur découvre la grille et connaît la position de la clé. Il n'a le droit de retourner qu'une seule pièce afin de faire deviner la position de la clé au second joueur.
+\newline
+- Le second joueur découvre ensuite la grille et doit trouver l'emplacement de la clé grâce aux valeurs des pièces.\newline
+\newline
+Ce problème, travaillant sur les notions de superposition, de parité et de contrôle par l'état 0, ne présente pas d'avantage quantique en raison de sa solution simple.\newline
+\newline
+Explication de la stratégie :\newline
+Tout d'abord, on découpe la grille 2x2 en attribuant des indices binaires à chacune des cases: le premier indice indique la ligne et le deuxième la colonne (cf. 2.1).\newline
+Les deux joueurs vont ensuite, avant le début du jeu, se mettre d'accord sur une case où se concentrer (admettons ici la case d'indices 11). Nous nous servons alors de la somme en binaire des valeurs des pièces sur la ligne d'indice 1 pour indexer la ligne de la clé et de la somme en binaire des valeurs des pièces sur la colonne d'indice 1 pour indexer la colonne de la clé.\newline
+Ainsi, en suivant cette stratégie, le premier joueur peut toujours indiquer la réponse en suivant ces règles :\newline
+- Si seule la somme de la ligne est fausse, alors il devra tourner la pièce 10.\newline
+- Si seule la somme de la colonne est fausse, alors il devra tourner la pièce 01.\newline
+- Si les deux sommes n'indiquent pas le bon emplacement, alors il tournera la pièce 11.\newline
+- Enfin, si les sommes indiquent déjà le bon emplacement, alors il tournera la pièce 00.\newline
+\newline
+Dans le cadre de ce projet, nous allons nous intéresser à développer deux algorithmes pour résoudre deux variantes de cette énigme : le jeu d'échecs 4x4 et le jeu d'échecs 8x8.
   
 \section {Description}
     \subsection{Découpage de la grille}
