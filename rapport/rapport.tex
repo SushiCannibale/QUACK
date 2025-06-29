@@ -72,7 +72,7 @@ Ce problème, travaillant sur les notions de superposition, de parité et de con
 \newline
 Explication de la stratégie :\newline
 Tout d'abord, on découpe la grille 2x2 en attribuant des indices binaires à chacune des cases: le premier indice indique la ligne et le deuxième la colonne (cf. 2.1).\newline
-Les deux joueurs vont ensuite, avant le début du jeu, se mettre d'accord sur une case où se concentrer (admettons ici la case d'indices 11). Nous nous servons alors de la somme en binaire des valeurs des pièces sur la ligne d'indice 1 pour indexer la ligne de la clé et de la somme en binaire des valeurs des pièces sur la colonne d'indice 1 pour indexer la colonne de la clé.\newline
+Les deux joueurs vont ensuite, avant le début du jeu, se mettre d'accord sur une case sur laquelle se concentrer (admettons ici la case d'indices 11). Nous nous servons alors de la somme en binaire des valeurs des pièces sur la ligne d'indice 1 pour indexer la ligne de la clé et de la somme en binaire des valeurs des pièces sur la colonne d'indice 1 pour indexer la colonne de la clé.\newline
 Ainsi, en suivant cette stratégie, le premier joueur peut toujours indiquer la réponse en suivant ces règles :\newline
 - Si seule la $\Sigma$ mod 2 sur la ligne est $\ne$ de la ligne de la clé, alors il devra tourner la pièce 10.\newline
 - Si seule la $\Sigma$ mod 2 sur la colonne est $\ne$ de la colonne de la clé, alors il devra tourner la pièce 01.\newline
@@ -165,11 +165,11 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     L'on dispose de 4 Q-bits représentant 4 cases (cf. \hyperref[sec:grid-2x2]{section 2.1}).
     \vspace{5mm}
     
-    Les Q-bits \textbf{Col.Target} et \textbf{Row.Target} représentent la position de la case ciblée. Dans le cas d'une grille 4x4, target représentera premièrement la sous-grille dans laquelle se trouve la clé, puis dans un second temps la case dans laquelle ce trouve la clé. La concaténation des deux tirages de Target nous donnent les 4 bits de la position de la clé.
+    Les Q-bits \textbf{Col.Target} et \textbf{Row.Target} représentent la position de la case ciblée. Dans le cas d'une grille 4x4, target représentera premièrement la sous-grille dans laquelle se trouve la clé, puis dans un second temps la case dans laquelle se trouve la clé. La concaténation des deux tirages de Target nous donnent les 4 bits de la position de la clé.
     
     \vspace{5mm}
 
-    Les Q-bits \textbf{Col.Grid} et \textbf{Row.Grid} donnent la position de la sous-grille où le jeton doit être flip. Nous avons abitrairement choisi la sous grille en bas à gauche. Ainsi, Alice devra flip le coin en \textbf{11XY} où X est donné par \textbf{Row.Grid} et Y par \textbf{Col.Grid}.
+    Les Q-bits \textbf{Col.Grid} et \textbf{Row.Grid} donnent la position de la sous-grille où le jeton doit être flip. Nous avons arbitrairement choisi la sous grille en bas à gauche. Ainsi, Alice devra flip le coin en \textbf{11XY} où X est donné par \textbf{Row.Grid} et Y par \textbf{Col.Grid}.
 
     \vspace{5mm}
 
