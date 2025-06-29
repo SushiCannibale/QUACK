@@ -94,6 +94,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     \end{center}
 
     \subsubsection{Grille 4x4}
+    Dans cette variante, nous pouvons tourner 2 pièces.
     \begin{center}
         \begin{TAB}(4,2cm,2cm, 2cm, 2cm)[5pt]{|c|c|c|c|}{|c|c|c|c|}% (rows,min,max)[tabcolsep]{columns}{rows}
         \textcolor{red}{00}00 & \textcolor{red}{00}01 & \textcolor{red}{01}00 & \textcolor{red}{01}01 \\
@@ -112,6 +113,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
 
 
     \newpage
+    Dans cette variante, nous pouvons tourner 3 pièces.
     Le principe est exactement le même pour la version 8x8 (c'est juste moins lisible ;-;).
         \begin{center}
         \begin{TAB}(4,2cm,2cm, 2cm, 2cm)[5pt]{|c|c|c|c|c|c|c|c|}{|c|c|c|c|c|c|c|c|}% (rows,min,max)[tabcolsep]{columns}{rows}
@@ -169,8 +171,8 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     \section{Analyse mathématique}
 
     Analyse mathématique de la dernière partie de la grille 4x4. Nous avons choisi seulement la fin, car on y trouve le choix final de la case et on peut remarquer que la première partie est très similaire à celle-ci.
-
-    \centering ========== PREPARE ========== \\
+\begin{center}
+    ========== PREPARE ========== \\
 
 \[
     \begin{array}{l}
@@ -197,7 +199,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
      \end{array}
     \]
 
-    \centering ========== PARITE TARGET (COIN) ========== \\
+    ========== PARITE TARGET (COIN) ========== \\
 
   \[
     \begin{array}{l}
@@ -331,7 +333,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     \end{array}
     \]
 
-    \centering ========== FLIP COIN (TOP LEFT) ========== \\
+    ========== FLIP COIN (TOP LEFT) ========== \\
 
      \begin{array}{l}
      |\psi_{7}\rangle = \hat{c}\ |\ \psi_{6} \rangle\ (\( \color{blue}7e\ cnot\)) \\ 
@@ -554,7 +556,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     \end{array}
     \]
 
-    \centering ========== BOB READS ========== \\
+    ========== BOB READS ========== \\
 
     \[
      \begin{array}{l}
@@ -643,10 +645,14 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     + |\red{1}1100011\red{1}000\rangle + |\red{1}1100011\red{1}001\rangle + |011000110010\rangle + |011000110011\rangle  ) \\
     \end{array}
     \]
-    
+    \end{center}
+
     \section{Conclusion}
 
     Ce projet fut intéressant et amusant, en nous permettant de résoudre des énigmes en utilisant nos connaissances en algorithmes quantiques.
+    \newline
+    Une prochaine variante à ces algorithmes pourrait être la version 16x16 du jeu, mais il ne s'agirait que d'ajouter une récursion.
+    \newline
     \newline
     Pour finir, nous vous invitons à voir cette vidéo : \href{}{} % 3DS Nathan
     
