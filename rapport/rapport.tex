@@ -110,7 +110,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     On va appliquer l'algorithme de résolution d'une grille 2x2 sur la grille 11 pour déterminer la sous-grille 2x2 dans laquelle est la clé, et ensuite faire de même sur la grille 00 pour déterminer l'emplacement de la clé dans la sous-grille trouvée.
     \newline
 
-    Note algorithme 4x4 consomme 14 Q-bits (l'on omet les deux de contrôle de grille), avec :
+    Notre algorithme 4x4 consomme 14 Q-bits (l'on omet les deux de contrôle de grille), avec :
     \begin{itemize}
         \item 12 portes Hadamard
         \item 20 portes CNot
@@ -118,10 +118,11 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
         \item 16 portes Not
     \end{itemize}
 
+    \newpage
+    
     \subsubsection{Grille 8x8}
 
-
-    \newpage
+    
     Dans cette variante, nous pouvons tourner 3 pièces.
     Le principe est exactement le même pour la version 8x8 (c'est juste moins lisible ;-;).
         \begin{center}
@@ -144,7 +145,7 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     On va appliquer l'algorithme de résolution d'une grille 2x2 sur la grille 1111 pour déterminer la sous-grille 4x4 qui contient la clé, ensuite nous faisons de même sur la grille 1100 pour déterminer la sous-grille 2x2 dans laquelle est la clé, et enfin nous réappliquons l'algorithme sur la grille 0011 pour trouver l'emplacement de la clé dans la sous-grille trouvée.
 
     \newpage
-    Note algorithme 8x8 consomme 18 Q-bits (l'on omet les 4 de preuve de grille), avec :
+    Notre algorithme 8x8 consomme 18 Q-bits (l'on omet les 4 de preuve de grille), avec :
     \begin{itemize}
         \item 18 portes Hadamard
         \item 30 portes CNot
@@ -216,6 +217,8 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
      \end{array}
     \]
 
+    \newpage
+    
     ========== PARITE TARGET (COIN) ========== \\
 
   \[
@@ -349,6 +352,8 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     + |00\red{1}000\red{1}11100\rangle + |00\red{1}000\red{1}11101\rangle + |00\red{1}100\red{1}11110\rangle + |00\red{1}100\red{1}11111\rangle  ) \\
     \end{array}
     \]
+
+    \newpage
 
     ========== FLIP COIN (TOP LEFT) ========== \\
 
@@ -572,6 +577,8 @@ Dans le cadre de ce projet, nous allons nous intéresser à développer deux alg
     + |001000111000\rangle + |001000111001\rangle + |001000110010\rangle + |001000110011\rangle  ) \\
     \end{array}
     \]
+
+    \newpage
 
     ========== BOB READS ========== \\
 
