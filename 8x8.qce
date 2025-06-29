@@ -1,0 +1,416 @@
+// Programming Quantum Computers
+//   by Eric Johnston, Nic Harrigan and Mercedes Gimeno-Segovia
+//   O'Reilly Media
+
+// To run this online, go to http://oreilly-qc.github.io?p=2-1
+
+// This sample generates a single random bit.
+
+
+// Fait tourner le circuit et renvoie les qubits mesurés
+function circuit4x4(){
+    var num_qubits = 16;
+    qc.reset(num_qubits);
+
+    var c00 = qint.new(1, 'Case 00');
+    var c01 = qint.new(1, 'Case 01');
+    var c10 = qint.new(1, 'Case 10');
+    var c11 = qint.new(1, 'Case 11');
+
+    // Il s'agit de la case cible. Soit une sous-grille, soit la clé
+    var col_target = qint.new(1, 'Col. Target');
+    var row_target = qint.new(1, 'Row Target');
+
+    var col_grid = qint.new(1, 'Col. Grid');
+    var row_grid = qint.new(1, 'Row Grid');
+
+    var col_coin = qint.new(1, 'Col. Coin');
+    var row_coin = qint.new(1, 'Row Coin');
+
+    var col_bob = qint.new(1, 'Col. Bob');
+    var row_bob = qint.new(1, 'Row Bob');
+
+    var target_col_proof = qint.new(1, 'Target Col Proof');
+    var target_row_proof = qint.new(1, 'Target Row Proof');
+    var col_bob_grid = qint.new(1, 'Col Bob Grid');
+    var row_bob_grid = qint.new(1, 'Row Bob Grid');
+
+    qc.label('Prépare');
+    qc.write(0, 0b1111111111111111);
+    qc.hadamard(0b1111);
+    qc.hadamard(0b110000);
+
+    // Ici, col_grid & row_grid donnent la position de la subgrid où se trouve la clé.
+    // Il s'agit du premier coin que l'on doit flip et il est à la position 11XY
+    // où X est donné par row_grid et Y par col_grid.
+    qc.label('Parité Target (Grid)');
+    col_grid.cnot(c01);
+    col_grid.cnot(c11);
+    row_grid.cnot(c10);
+    row_grid.cnot(c11);
+
+    col_grid.cnot(col_target);
+    row_grid.cnot(row_target);
+
+    qc.label('Flip coin (bottom right)')
+    // 1 & 1
+    qc.cnot(0b1000, 0b11000000);
+    // 1 & 0
+    col_grid.not();
+    qc.cnot(0b100, 0b11000000);
+    col_grid.not();
+    // 0 & 1
+    row_grid.not();
+    qc.cnot(0b10, 0b11000000);
+    row_grid.not();
+    // 0 & 0
+    qc.not(0b11000000);
+    qc.cnot(0b1, 0b11000000);
+    qc.not(0b11000000);
+
+    /// PREUVE MI-PARCOURS
+    target_col_proof.cnot(col_target);
+    target_row_proof.cnot(row_target);
+    col_bob_grid.cnot(c01);
+    col_bob_grid.cnot(c11);
+    row_bob_grid.cnot(c10);
+    row_bob_grid.cnot(c11);
+
+    const tcp = target_col_proof.read();
+    const trp = target_row_proof.read();
+    const cbg = col_bob_grid.read();
+    const rbg = row_bob_grid.read();
+    /// FIN PREUVE MI-PARCOURS
+
+    qc.label('Prépare');
+    qc.hadamard(0b1111);
+    // Cette fois, col_target & row_target représentent la position de la clé, car 
+    // l'on est en fin de récursion.
+    qc.hadamard(0b110000);
+
+    // On s'attaque à la pièce posée en 00XY où X est donné par row_coin et Y 
+    // par col_coin.
+    qc.label('Parité Target (Coin)');
+    col_coin.cnot(c01);
+    col_coin.cnot(c11);
+    row_coin.cnot(c10);
+    row_coin.cnot(c11);
+
+    col_coin.cnot(col_target);
+    row_coin.cnot(row_target);
+
+    qc.label('Flip coin (top left)')
+    // 1 & 1
+    qc.cnot(0b1000, 0b1100000000);
+    // 1 & 0
+    col_coin.not();
+    qc.cnot(0b100, 0b1100000000);
+    col_coin.not();
+    // 0 & 1
+    row_coin.not();
+    qc.cnot(0b10, 0b1100000000);
+    row_coin.not();
+    // 0 & 0
+    qc.not(0b1100000000);
+    qc.cnot(0b1, 0b1100000000);
+    qc.not(0b1100000000);
+
+    qc.label('Bob reads');
+    col_bob.cnot(c01);
+    col_bob.cnot(c11);
+    row_bob.cnot(c10);
+    row_bob.cnot(c11);
+
+    const ct = col_target.read();
+    const rt = row_target.read();
+    const cb = col_bob.read();
+    const rb = row_bob.read();
+
+    return (rbg << 15) + (cbg << 14) + (trp << 13) + (tcp << 12) + (rb << 11) +  (cb << 10) + (rt << 5) + (ct << 4)
+}
+
+function circuit8x8(){
+    var num_qubits = 22;
+    qc.reset(num_qubits);
+    
+    var c00 = qint.new(1, 'Case 00');
+    var c01 = qint.new(1, 'Case 01');
+    var c10 = qint.new(1, 'Case 10');
+    var c11 = qint.new(1, 'Case 11');
+    
+    // Il s'agit de la case cible. Soit une sous-grille, soit la clé
+    var col_target = qint.new(1, 'Col. Target');
+    var row_target = qint.new(1, 'Row Target');
+    
+    // Grid extérieure
+    var col_grid_1 = qint.new(1, 'Col. Grid 1');
+    var row_grid_1 = qint.new(1, 'Row Grid 1');
+    
+    // Sous-grille
+    var col_grid_2 = qint.new(1, 'Col. Grid 2');
+    var row_grid_2 = qint.new(1, 'Row Grid 2');
+    
+    // Sous-sous-grille
+    var col_coin = qint.new(1, 'Col. Coin');
+    var row_coin = qint.new(1, 'Row Coin');
+    
+    var col_bob = qint.new(1, 'Col. Bob');
+    var row_bob = qint.new(1, 'Row Bob');
+    
+    var target_col_proof_1 = qint.new(1, 'Target Col Proof 1');
+    var target_row_proof_1 = qint.new(1, 'Target Row Proof 1');
+    var col_bob_grid_1 = qint.new(1, 'Col Bob Grid 1');
+    var row_bob_grid_1 = qint.new(1, 'Row Bob Grid 1');
+    
+    var target_col_proof_2 = qint.new(1, 'Target Col Proof 2');
+    var target_row_proof_2 = qint.new(1, 'Target Row Proof 2');
+    var col_bob_grid_2 = qint.new(1, 'Col Bob Grid 2');
+    var row_bob_grid_2 = qint.new(1, 'Row Bob Grid 2');
+    
+    qc.label('Prépare');
+    qc.write(0, 0b00-1);
+    qc.hadamard(0b1111);
+    qc.hadamard(0b110000);
+    
+    // Ici, col_grid & row_grid donnent la position de la subgrid où se trouve la clé.
+    // Il s'agit du premier coin que l'on doit flip et il est à la position 11XY
+    // où X est donné par row_grid et Y par col_grid.
+    qc.label('Parité Target (Grid)');
+    col_grid_1.cnot(c01);
+    col_grid_1.cnot(c11);
+    row_grid_1.cnot(c10);
+    row_grid_1.cnot(c11);
+    
+    col_grid_1.cnot(col_target);
+    row_grid_1.cnot(row_target);
+    
+    qc.label('Flip coin (bottom right)')
+    // 1 & 1
+    qc.cnot(0b1000, 0b11000000);
+    // 1 & 0
+    col_grid_1.not();
+    qc.cnot(0b100, 0b11000000);
+    col_grid_1.not();
+    // 0 & 1
+    row_grid_1.not();
+    qc.cnot(0b10, 0b11000000);
+    row_grid_1.not();
+    // 0 & 0
+    qc.not(0b11000000);
+    qc.cnot(0b1, 0b11000000);
+    qc.not(0b11000000);
+    
+    /// PREUVE SOUS-GRILLE
+    target_col_proof_1.cnot(col_target);
+    target_row_proof_1.cnot(row_target);
+    col_bob_grid_1.cnot(c01);
+    col_bob_grid_1.cnot(c11);
+    row_bob_grid_1.cnot(c10);
+    row_bob_grid_1.cnot(c11);
+    
+    const tcp1 = target_col_proof_1.read();
+    const trp1 = target_row_proof_1.read();
+    const cbg1 = col_bob_grid_1.read();
+    const rbg1 = row_bob_grid_1.read();
+    /// FIN PREUVE SOUS-GRILLE
+    
+    qc.label('Prépare');
+    qc.hadamard(0b1111);
+    // Cette fois, col_target & row_target représentent la position de la clé, car 
+    // l'on est en fin de récursion.
+    qc.hadamard(0b110000);
+    
+    // On s'attaque à la pièce posée en 00XY où X est donné par row_coin et Y 
+    // par col_coin.
+    qc.label('Parité Target (Coin)');
+    col_grid_2.cnot(c01);
+    col_grid_2.cnot(c11);
+    row_grid_2.cnot(c10);
+    row_grid_2.cnot(c11);
+    
+    col_grid_2.cnot(col_target);
+    row_grid_2.cnot(row_target);
+    
+    qc.label('Flip coin (top left)')
+    // 1 & 1
+    qc.cnot(0b1000, 0b1100000000);
+    // 1 & 0
+    col_grid_2.not();
+    qc.cnot(0b100, 0b1100000000);
+    col_grid_2.not();
+    // 0 & 1
+    row_grid_2.not();
+    qc.cnot(0b10, 0b1100000000);
+    row_grid_2.not();
+    // 0 & 0
+    qc.not(0b1100000000);
+    qc.cnot(0b1, 0b1100000000);
+    qc.not(0b1100000000);
+    
+    /// PREUVE SOUS-SOUS-GRILLE
+    target_col_proof_2.cnot(col_target);
+    target_row_proof_2.cnot(row_target);
+    col_bob_grid_2.cnot(c01);
+    col_bob_grid_2.cnot(c11);
+    row_bob_grid_2.cnot(c10);
+    row_bob_grid_2.cnot(c11);
+    
+    const tcp2 = target_col_proof_2.read();
+    const trp2 = target_row_proof_2.read();
+    const cbg2 = col_bob_grid_2.read();
+    const rbg2 = row_bob_grid_2.read();
+    /// PREUVE SOUS-SOUS-GRILLE
+    
+    qc.label('Prépare');
+    qc.hadamard(0b1111);
+    // Cette fois, col_target & row_target représentent la position de la clé, car 
+    // l'on est en fin de récursion.
+    qc.hadamard(0b110000);
+    
+    // On s'attaque à la pièce posée en 00XY où X est donné par row_coin et Y 
+    // par col_coin.
+    qc.label('Parité Target (Coin)');
+    col_coin.cnot(c01);
+    col_coin.cnot(c11);
+    row_coin.cnot(c10);
+    row_coin.cnot(c11);
+    
+    col_coin.cnot(col_target);
+    row_coin.cnot(row_target);
+    
+    qc.label('Flip coin (top left)')
+    // 1 & 1
+    qc.cnot(0b1000, 0b110000000000);
+    // 1 & 0
+    col_coin.not();
+    qc.cnot(0b100, 0b110000000000);
+    col_coin.not();
+    // 0 & 1
+    row_coin.not();
+    qc.cnot(0b10, 0b110000000000);
+    row_coin.not();
+    // 0 & 0
+    qc.not(0b110000000000);
+    qc.cnot(0b1, 0b110000000000);
+    qc.not(0b110000000000);
+    
+    qc.label('Bob reads');
+    col_bob.cnot(c01);
+    col_bob.cnot(c11);
+    row_bob.cnot(c10);
+    row_bob.cnot(c11);
+    
+    const ct = col_target.read();
+    const rt = row_target.read();
+    const cb = col_bob.read();
+    const rb = row_bob.read();
+
+    /// TODO: the return =UwU=
+    //return (rbg << 15) + (cbg << 14) + (trp << 13) + (tcp << 12) + (rb << 11) +  (cb << 10) + (rt << 5) + (ct << 4)
+    return 0b00 - 1
+}
+
+function print_qubit_register(register, space_between_meaningful_qubits = true)
+{
+
+    // On lit le registre en partant du bit de poid fort pour que cela soit
+    // plus simple à afficher dans la console
+    for (let index = 15; index != -1; index--)
+    {
+        // Ajout d'un espace pour coupler les qubits qui vont bien ensemble
+        if (space_between_meaningful_qubits && (index == 13 || index == 11 || index == 9 || index == 5 || index == 3))
+        { 
+            qc.print(" ");
+        }
+
+        qc.print((register >> index) % 2);
+    }
+}
+
+async function simulate_n_times(n = 1, type="4x4")
+{
+    qc.print("========= BEGIN SIMULATION =========\n");
+    qc.print("Simulating ");
+    qc.print(n);
+    qc.print(" times\n\n");
+    let circuit = type == "4x4" ? circuit4x4 : circuit8x8
+    const occurences = new Map();
+
+
+        for (let i = 0; i < n; i++) {
+            // On fait tourner le circuit
+            const register = circuit();
+
+            // A-t-on déjà observé cet état ?
+            if (!occurences.has(register)) {
+                occurences.set(register, 0);
+            }
+
+            // On incrémente le nombre d'occurences de cet état
+            occurences.set(register, occurences.get(register) + 1);
+
+            // Information de progression en cas de grand n
+            if (i % 10 == 0)
+            {
+                qc.print("Iteration ");
+                qc.print(i);
+                qc.print("\n");
+            }
+
+            // Magie de javascript pour ne pas freeze le navigateur lorsque
+            // n est grand
+            await new Promise((resolve) => setTimeout(resolve, 1));
+        }  
+
+    let total_ocurrences = 0;
+
+    for (const n_observed of occurences.values())
+    {
+        total_ocurrences += n_observed;
+    }
+
+   for (const [state, n_observed] of occurences.entries()) {
+        print_qubit_register(state);
+        qc.print(" -> ");
+        qc.print(n_observed / total_ocurrences);
+        qc.print("\n");
+    }
+
+    qc.print("========= END OF SIMULATION ========\n");
+
+    return occurences;
+}
+
+// Pour pouvoir tracer un histogramme
+function csv_export(occurences)
+{
+    qc.print("```csv\n");
+    qc.print("state,frequency\n");
+
+    let total_ocurrences = 0;
+
+    for (const n_observed of occurences.values())
+    {
+        total_ocurrences += n_observed;
+    }
+
+    for (const [state, n_observed] of occurences.entries()) {
+        print_qubit_register(state, false);
+        qc.print(",");
+        qc.print(n_observed / total_ocurrences);
+        qc.print("\n");
+    }
+
+    qc.print("```");
+}
+
+// La fonction simulate_n_times devrait être appelée à l'intérieur de ce bloc exclusivement,
+// précédée du mot-clé 'await', et cela dans le but d'exploiter la magie de javascript et
+// ne pas freeze la fenêtre quand les simulations mettent du temps
+(async () =>
+{
+    let simulation_results = await simulate_n_times(100);
+
+    csv_export(simulation_results);
+
+})();
